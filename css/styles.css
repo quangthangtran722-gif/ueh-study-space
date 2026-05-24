@@ -99,8 +99,8 @@ a { text-decoration: none; color: inherit; }
 /* ── Navbar logo image ── */
 .logo-img-wrap {
   position: relative;
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   flex-shrink: 0;
 }
 .logo-img-wrap::before {
@@ -113,8 +113,8 @@ a { text-decoration: none; color: inherit; }
   pointer-events: none;
 }
 .logo-img {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   object-fit: cover;
   border: 1.5px solid rgba(20,184,166,0.4);
@@ -154,115 +154,53 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* ============================================================
-   HERO
+   HERO — Poster light aesthetic
+   Gradient: teal-mint → peach | spheres CSS-only
    ============================================================ */
 .hero {
-  background: var(--bg-base);
-  color: var(--text-primary);
-  padding: 52px 0 60px;
+  background: linear-gradient(135deg, #c8edf0 0%, #f0d4b8 100%);
+  color: #1a2a2c;
+  padding: 56px 0 64px;
   position: relative;
   overflow: hidden;
 }
-/* Aurora blobs */
-.hero-bg-pattern {
+
+/* ── Decorative spheres ── */
+.hero-sphere {
   position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 70% 60% at 78% 38%, rgba(20,184,166,0.13) 0%, transparent 60%),
-    radial-gradient(ellipse 45% 50% at 18% 78%, rgba(249,115,22,0.09) 0%, transparent 55%),
-    radial-gradient(ellipse 35% 40% at 88% 92%, rgba(245,158,11,0.07) 0%, transparent 50%);
+  border-radius: 50%;
   pointer-events: none;
 }
-.hero-shape { position: absolute; border-radius: 50%; pointer-events: none; }
-.hero-shape-1 {
-  width: 520px; height: 520px;
-  background: radial-gradient(circle, rgba(20,184,166,0.07) 0%, transparent 70%);
-  top: -160px; right: -130px;
+/* Large teal — top right */
+.hero-sphere-1 {
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle at 35% 35%, #4db8c0, #0d5c63);
+  top: -40px;
+  right: -40px;
+  opacity: 0.7;
 }
-.hero-shape-2 {
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(249,115,22,0.09) 0%, transparent 70%);
-  bottom: -90px; left: -70px;
-}
-
-/* ── Hero floating logo ── */
-.hero-logo-float {
-  display: none; /* hidden on mobile to avoid text overlap */
-  position: absolute;
-  top: 36px;
-  right: 36px;
+/* Small orange — bottom left */
+.hero-sphere-2 {
   width: 80px;
   height: 80px;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
+  background: radial-gradient(circle at 35% 35%, #f59e0b, #e8590c);
+  bottom: 20px;
+  left: 24px;
+  opacity: 0.6;
 }
-.hero-logo-glow {
-  position: absolute;
-  inset: -18px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(20,184,166,0.38) 0%, rgba(20,184,166,0.12) 45%, transparent 70%);
-  animation: heroLogoPulse 3.2s ease-in-out infinite;
-  pointer-events: none;
-}
-.hero-logo-img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid rgba(20,184,166,0.55);
-  box-shadow: 0 0 28px rgba(20,184,166,0.3), 0 0 60px rgba(20,184,166,0.12);
-  position: relative;
-  z-index: 1;
-  animation: heroLogoFloat 4s ease-in-out infinite;
-}
-@keyframes heroLogoPulse {
-  0%   { opacity: 0.4; transform: scale(0.95); }
-  50%  { opacity: 1;   transform: scale(1.15); }
-  100% { opacity: 0.4; transform: scale(0.95); }
-}
-@keyframes heroLogoFloat {
-  0%, 100% { transform: translateY(0px);  }
-  50%       { transform: translateY(-6px); }
+/* Small muted teal — top center */
+.hero-sphere-3 {
+  width: 50px;
+  height: 50px;
+  background: radial-gradient(circle at 35% 35%, #6dd6de, #0d5c63);
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.4;
 }
 
-@media (min-width: 640px) {
-  .hero-logo-float {
-    display: flex;
-    top: 36px;
-    right: 36px;
-    width: 88px;
-    height: 88px;
-  }
-  .hero-logo-img {
-    width: 88px;
-    height: 88px;
-  }
-}
-@media (min-width: 768px) {
-  .hero-logo-float {
-    top: 44px;
-    right: 52px;
-    width: 108px;
-    height: 108px;
-  }
-  .hero-logo-img {
-    width: 108px;
-    height: 108px;
-  }
-}
-@media (min-width: 1024px) {
-  .hero-logo-float {
-    top: 56px;
-    right: 90px;
-    width: 128px;
-    height: 128px;
-  }
-  .hero-logo-img {
-    width: 128px;
-    height: 128px;
-  }
-}
+/* ── Layout ── */
 .hero-inner {
   position: relative;
   z-index: 1;
@@ -272,40 +210,38 @@ a { text-decoration: none; color: inherit; }
 }
 .hero-content { text-align: center; }
 
-.hero-eyebrow {
-  display: inline-block;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--teal);
-  background: rgba(20,184,166,0.1);
-  border: 1px solid rgba(20,184,166,0.25);
-  padding: 5px 14px;
-  border-radius: 20px;
-  margin-bottom: 18px;
-}
-.hero-title {
+/* ── Title ── */
+.hero-title-main {
   font-family: 'Playfair Display', Georgia, serif;
-  font-size: 2rem;
+  font-size: clamp(36px, 8vw, 52px);
   font-weight: 800;
-  line-height: 1.12;
-  letter-spacing: -0.5px;
-  margin-bottom: 16px;
-  color: var(--text-primary);
+  line-height: 1.1;
+  letter-spacing: -1px;
+  margin-bottom: 14px;
 }
-.hero-accent {
-  color: var(--amber);
-  font-style: italic;
+.title-ueh        { color: #0d5c63; }
+.title-studyspace { color: #e8590c; }
+
+/* ── Tagline ── */
+.hero-tagline {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: clamp(16px, 3vw, 18px);
+  font-weight: 500;
+  color: #1a4a50;
+  margin-bottom: 10px;
+  letter-spacing: -0.2px;
 }
+
+/* ── Subtitle ── */
 .hero-subtitle {
-  font-size: 1rem;
-  color: var(--text-secondary);
+  font-size: 0.95rem;
+  color: #3a5a60;
   max-width: 480px;
   margin: 0 auto 28px;
   line-height: 1.7;
 }
+
+/* ── CTA row ── */
 .hero-cta-row {
   display: flex;
   align-items: center;
@@ -318,68 +254,69 @@ a { text-decoration: none; color: inherit; }
   align-items: center;
   gap: 8px;
   padding: 14px 28px;
-  background: var(--coral);
+  background: #e8590c;
   color: #fff;
   font-size: 15px;
   font-weight: 700;
   border-radius: 10px;
   transition: all var(--transition);
   min-height: 50px;
-  box-shadow: 0 4px 20px rgba(249,115,22,0.4);
+  box-shadow: 0 4px 20px rgba(232,89,12,0.35);
 }
 .btn-cta-primary:hover {
-  background: var(--coral-hover);
+  background: #c94a08;
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(249,115,22,0.5);
+  box-shadow: 0 8px 28px rgba(232,89,12,0.45);
 }
 .btn-cta-primary:active { transform: translateY(0); }
+
+/* Secondary: dark glass on light bg */
 .btn-cta-secondary {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 14px 24px;
-  background: var(--glass-bg);
-  color: var(--text-primary);
+  background: rgba(13,92,99,0.08);
+  color: #0d5c63;
   font-size: 14px;
   font-weight: 600;
   border-radius: 10px;
-  border: 1.5px solid var(--glass-border);
+  border: 1.5px solid rgba(13,92,99,0.3);
   transition: all var(--transition);
   min-height: 50px;
-  backdrop-filter: blur(8px);
 }
 .btn-cta-secondary:hover {
-  background: var(--glass-bg-hover);
-  border-color: var(--teal);
-  color: var(--teal-bright);
+  background: rgba(13,92,99,0.15);
+  border-color: rgba(13,92,99,0.5);
+  color: #0d5c63;
 }
 
-/* Hero stats */
+/* ── Stat cards ── */
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 .stat-card {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 14px;
+  background: rgba(255,255,255,0.65);
+  border: 1px solid rgba(13,92,99,0.15);
+  border-radius: 16px;
   padding: 18px 14px;
   text-align: center;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transition: border-color var(--transition), box-shadow var(--transition);
 }
 .stat-card:hover {
-  border-color: rgba(20,184,166,0.35);
-  box-shadow: 0 0 20px rgba(20,184,166,0.08);
+  border-color: rgba(13,92,99,0.3);
+  box-shadow: 0 4px 20px rgba(13,92,99,0.1);
 }
 .stat-number {
   display: block;
   font-family: 'Playfair Display', Georgia, serif;
   font-size: 2.2rem;
   font-weight: 700;
-  color: var(--amber);
+  color: #e8590c;
   line-height: 1.1;
   margin-bottom: 6px;
   letter-spacing: -1px;
@@ -388,7 +325,7 @@ a { text-decoration: none; color: inherit; }
 .stat-label {
   font-size: 11px;
   font-weight: 500;
-  color: var(--text-secondary);
+  color: #1a4a50;
   line-height: 1.4;
 }
 
