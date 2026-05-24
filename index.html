@@ -1,8 +1,138 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head><meta charset="UTF-8"><title>UEH Study Space</title></head>
-<body style="font-family:sans-serif;text-align:center;padding:60px">
-  <h1>🎓 UEH Study Space</h1>
-  <p>Website đang được xây dựng.</p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UEH Study Space — Tìm chỗ học dễ dàng</title>
+  <meta name="description" content="Tìm chỗ học phù hợp tại UEH — xem trạng thái còn trống, wifi, ổ điện trước khi đi.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ── NAVBAR ── -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar-inner">
+      <div class="navbar-logo">
+        <span class="logo-icon" aria-hidden="true">📚</span>
+        <span class="logo-text">UEH Study Space</span>
+      </div>
+      <nav class="navbar-nav" aria-label="Lọc nhanh theo campus">
+        <button class="nav-campus-btn" data-campus="A" aria-pressed="false">Campus A</button>
+        <button class="nav-campus-btn" data-campus="B" aria-pressed="false">Campus B</button>
+        <button class="nav-campus-btn" data-campus="N" aria-pressed="false">Campus N</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── HERO ── -->
+  <section class="hero" aria-label="Giới thiệu UEH Study Space">
+    <div class="container hero-inner">
+      <h1 class="hero-title">UEH Study Space</h1>
+      <p class="hero-subtitle">Tìm chỗ học — không cần đi mò</p>
+      <div class="hero-stats" aria-label="Thống kê khảo sát sinh viên">
+        <div class="stat-item">
+          <span class="stat-number" aria-label="31 phần trăm">31%</span>
+          <span class="stat-label">SV mất hơn 10 phút<br>tìm chỗ mỗi lần</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-number" aria-label="4.3 trên 5">4.3/5</span>
+          <span class="stat-label">Mức độ quan tâm<br>đến ứng dụng</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true"></div>
+        <div class="stat-item">
+          <span class="stat-number" aria-label="16 địa điểm">16</span>
+          <span class="stat-label">Địa điểm đã<br>khảo sát thực tế</span>
+        </div>
+      </div>
+      <a href="#locations" class="btn-cta">Tìm chỗ ngay →</a>
+    </div>
+  </section>
+
+  <!-- ── FILTERS ── -->
+  <section class="filters-section" id="filters-section" aria-label="Bộ lọc địa điểm">
+    <div class="container">
+
+      <!-- Campus chips -->
+      <div class="filter-group">
+        <span class="filter-label" id="campus-label">Campus:</span>
+        <div class="chips-row" id="campus-chips" role="group" aria-labelledby="campus-label">
+          <button class="chip" data-campus="A" aria-pressed="false">Campus A</button>
+          <button class="chip" data-campus="B" aria-pressed="false">Campus B</button>
+          <button class="chip" data-campus="N" aria-pressed="false">Campus N</button>
+          <button class="chip" data-campus="ngoai" aria-pressed="false">Ngoài trường</button>
+        </div>
+      </div>
+
+      <!-- Feature chips -->
+      <div class="filter-group">
+        <span class="filter-label" id="feature-label">Tiêu chí:</span>
+        <div class="chips-row" id="feature-chips" role="group" aria-labelledby="feature-label">
+          <button class="chip" data-filter="has_power" aria-pressed="false">🔌 Có ổ điện</button>
+          <button class="chip" data-filter="wifi" aria-pressed="false">📶 Wifi mạnh</button>
+          <button class="chip" data-filter="near_class" aria-pressed="false">📍 Gần lớp</button>
+          <button class="chip" data-filter="group_friendly" aria-pressed="false">👥 Học nhóm</button>
+          <button class="chip" data-filter="lighting_ac" aria-pressed="false">💡 Sáng &amp; mát</button>
+          <button class="chip" data-filter="quietness" aria-pressed="false">🔇 Yên tĩnh</button>
+        </div>
+      </div>
+
+      <!-- Result count & reset -->
+      <div class="filter-meta">
+        <span id="result-count" class="result-count" aria-live="polite">Tìm thấy 16 địa điểm</span>
+        <button id="reset-filters" class="btn-reset hidden" aria-label="Xóa toàn bộ bộ lọc">✕ Xóa bộ lọc</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── LOCATIONS GRID ── -->
+  <main id="locations" class="locations-section" aria-label="Danh sách địa điểm học tập">
+    <div class="container">
+
+      <!-- Loading skeleton -->
+      <div id="loading-state" class="loading-state" aria-busy="true" aria-label="Đang tải danh sách địa điểm">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+
+      <!-- Cards grid -->
+      <div id="locations-grid" class="locations-grid hidden" role="list" aria-label="Danh sách địa điểm">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Empty state -->
+      <div id="empty-state" class="empty-state hidden" role="status" aria-live="polite">
+        <div class="empty-icon" aria-hidden="true">🔍</div>
+        <p class="empty-title">Không tìm thấy địa điểm phù hợp</p>
+        <p class="empty-desc">Thử bỏ bớt 1 tiêu chí — hoặc chọn "Gần lớp" để tìm chỗ gần nhất.</p>
+        <button class="btn-reset-inline" id="reset-filters-empty">Xóa bộ lọc</button>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── POPUP OVERLAY (chi tiết địa điểm) ── -->
+  <div id="popup-overlay" class="popup-overlay hidden" role="dialog" aria-modal="true" aria-label="Chi tiết địa điểm">
+    <div id="popup-sheet" class="popup-sheet" tabindex="-1">
+      <div class="popup-drag-handle" aria-hidden="true"></div>
+      <button class="popup-close" id="popup-close" aria-label="Đóng popup">✕</button>
+      <div id="popup-body" class="popup-body">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOAST ── -->
+  <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="js/app.js"></script>
 </body>
 </html>
