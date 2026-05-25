@@ -237,6 +237,19 @@ function syncFilterUI() {
   });
   const hasAny = activeCampus || activeFeatures.size > 0;
   document.getElementById("reset-filters").classList.toggle("hidden", !hasAny);
+  updateBadgeVisibility(hasAny);
+}
+
+// Toggle occupancy badges + hint based on whether any filter is active.
+// hasFilter omitted → computed from current state.
+function updateBadgeVisibility(hasFilter) {
+  if (hasFilter === undefined) {
+    hasFilter = !!(activeCampus || activeFeatures.size > 0);
+  }
+  const grid = document.getElementById("locations-grid");
+  const hint = document.getElementById("filter-hint");
+  if (grid) grid.classList.toggle("no-filter", !hasFilter);
+  if (hint) hint.classList.toggle("hidden", hasFilter);
 }
 
 function resetFilters() {
@@ -266,6 +279,7 @@ function renderCards() {
   renderCardList(sorted);
   document.getElementById("locations-grid").classList.remove("hidden");
   document.getElementById("result-count").textContent = `${sorted.length} địa điểm`;
+  updateBadgeVisibility();
 }
 
 function renderCardList(locs) {
