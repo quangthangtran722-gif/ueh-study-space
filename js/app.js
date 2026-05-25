@@ -385,12 +385,18 @@ function openPopup(locationId) {
   document.getElementById("popup-overlay").classList.remove("hidden");
   document.body.style.overflow = "hidden";
   document.getElementById("popup-sheet").focus();
+
+  // Schedule the 20-minute check-in reminder for this location
+  scheduleReminder(locationId, loc.name);
 }
 
 function closePopup() {
   document.getElementById("popup-overlay").classList.add("hidden");
   document.body.style.overflow = "";
   currentLocId = null;
+
+  // Cancel pending reminder — user no longer viewing this place
+  cancelReminder();
 }
 
 function createPopupHTML(loc, status) {
@@ -946,6 +952,173 @@ function goBackToStep1() {
     b.classList.toggle("active", finderFeatures.has(b.dataset.feature));
   });
   attachFinderStep1Events();
+}
+
+// ============================================================
+// CHECK-IN REMINDER
+// 20 phút sau khi mở popup → vibrate + banner cố định ở đáy.
+// Skip nếu user đã báo trạng thái địa điểm đó trong 30 phút qua.
+// ============================================================
+const REMINDER_DELAY_MS    = 20 * 60_000; // 20 phút
+const REMINDER_AUTOHIDE_MS = 15 * 1000;   // 15 giây
+
+let reminderTimer        = null;
+let reminderLocationId   = null;
+let reminderLocationName = null;
+
+function scheduleReminder(locationId, locationName) {
+  cancelReminder();
+  reminderLocationId   = locationId;
+  reminderLocationName = locationName;
+  reminderTimer = setTimeout(
+    () => fireReminder(locationId, locationName),
+    REMINDER_DELAY_MS
+  );
+}
+
+function cancelReminder() {
+  if (reminderTimer) clearTimeout(reminderTimer);
+  reminderTimer = null;
+  reminderLocationId = null;
+  reminderLocationName = null;
+}
+
+function fireReminder(locationId, locationName) {
+  reminderTimer = null;
+  // Skip if user already reported within 30 minutes (cooldown via canReport)
+  if (!canReport(locationId)) return;
+  // Haptic feedback — no-op if device doesn't support it
+  if (navigator.vibrate) {
+    try { navigator.vibrate([300, 100, 300]); } catch (_) {}
+  }
+  showCheckinBanner(locationId, locationName);
+}
+
+function showCheckinBanner(locationId, locationName) {
+  injectCheckinBannerStyles();
+
+  // Drop any existing banner before showing a new one
+  const existing = document.getElementById("checkin-banner");
+  if (existing) existing.remove();
+
+  const banner = document.createElement("div");
+  banner.id = "checkin-banner";
+  banner.className = "checkin-banner";
+  banner.setAttribute("role", "alert");
+  banner.setAttribute("aria-live", "polite");
+  banner.innerHTML = `
+    <p class="checkin-banner-title">⏰ Bạn đang ở <strong>${locationName}</strong>?</p>
+    <p class="checkin-banner-desc">Báo trạng thái giúp bạn khác!</p>
+    <div class="checkin-banner-actions">
+      <button class="checkin-btn-primary"   id="checkin-now"  type="button">Báo ngay</button>
+      <button class="checkin-btn-secondary" id="checkin-later" type="button">Để sau</button>
+    </div>
+  `;
+  document.body.appendChild(banner);
+  requestAnimationFrame(() => banner.classList.add("visible"));
+
+  // Auto-hide after 15s
+  const autoHide = setTimeout(() => dismissCheckinBanner(banner), REMINDER_AUTOHIDE_MS);
+
+  document.getElementById("checkin-now").addEventListener("click", () => {
+    clearTimeout(autoHide);
+    dismissCheckinBanner(banner);
+    openCheckinReportForm(locationId);
+  });
+  document.getElementById("checkin-later").addEventListener("click", () => {
+    clearTimeout(autoHide);
+    dismissCheckinBanner(banner);
+  });
+}
+
+function dismissCheckinBanner(banner) {
+  banner.classList.remove("visible");
+  setTimeout(() => banner.remove(), 280);
+}
+
+// "Báo ngay" → mở popup (nếu cần) rồi click vào nút "📣 Báo trạng thái hiện tại"
+function openCheckinReportForm(locationId) {
+  const overlay   = document.getElementById("popup-overlay");
+  const popupOpen = overlay && !overlay.classList.contains("hidden");
+  const sameLoc   = currentLocId === locationId;
+
+  const triggerReport = () => {
+    const btn = document.getElementById("btn-open-report");
+    if (btn) btn.click();
+  };
+
+  if (popupOpen && sameLoc) {
+    triggerReport();
+  } else {
+    openPopup(locationId);
+    // Chờ DOM của popup render xong rồi click vào nút mở form
+    setTimeout(triggerReport, 80);
+  }
+}
+
+let _checkinStylesInjected = false;
+function injectCheckinBannerStyles() {
+  if (_checkinStylesInjected) return;
+  _checkinStylesInjected = true;
+  const style = document.createElement("style");
+  style.id = "checkin-banner-styles";
+  style.textContent = `
+    .checkin-banner {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      z-index: 9999;
+      width: 320px;
+      max-width: calc(100vw - 32px);
+      padding: 16px;
+      background: #0d5c63;
+      color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      font-family: 'Bricolage Grotesque', sans-serif;
+      opacity: 0;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+    .checkin-banner.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .checkin-banner-title {
+      margin: 0 0 4px;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+    .checkin-banner-title strong { color: #f0d4b8; font-weight: 700; }
+    .checkin-banner-desc {
+      margin: 0 0 12px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.4;
+    }
+    .checkin-banner-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .checkin-btn-primary,
+    .checkin-btn-secondary {
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: background 0.18s ease, transform 0.18s ease;
+    }
+    .checkin-btn-primary  { background: #e8590c; color: #fff; }
+    .checkin-btn-primary:hover { background: #c94a08; transform: translateY(-1px); }
+    .checkin-btn-secondary { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.92); }
+    .checkin-btn-secondary:hover { background: rgba(255,255,255,0.2); }
+  `;
+  document.head.appendChild(style);
 }
 
 // ============================================================
