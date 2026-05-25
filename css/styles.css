@@ -398,6 +398,23 @@ a { text-decoration: none; color: inherit; }
 }
 .chip:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
 
+/* Hint shown when no filter is active */
+.filter-hint {
+  font-size: 13px;
+  color: #5b7073;
+  text-align: center;
+  padding: 6px 0 2px;
+  margin: 0;
+  line-height: 1.4;
+}
+.filter-hint.hidden { display: none; }
+
+/* Hide occupancy badge on cards when no filter is active.
+   Keeps .campus-tag visible. Popup is unaffected. */
+.locations-grid.no-filter .card-overlay .badge {
+  display: none;
+}
+
 .filter-meta {
   display: flex;
   align-items: center;
