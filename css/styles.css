@@ -190,40 +190,30 @@ a { text-decoration: none; color: inherit; }
 .hero {
   position: relative;
   overflow: hidden;
-  padding: 40px 20px 48px;
+  padding: 56px 20px 60px;
   background:
-    radial-gradient(ellipse at 10% 60%, rgba(1,95,105,0.22) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 15%, rgba(211,111,49,0.18) 0%, transparent 50%),
-    radial-gradient(ellipse at 60% 90%, rgba(204,32,39,0.07) 0%, transparent 45%),
-    #f0ece7;
+    radial-gradient(ellipse 70% 60% at 0% 40%, rgba(1,95,105,0.42) 0%, transparent 55%),
+    radial-gradient(ellipse 65% 55% at 100% 0%, rgba(211,111,49,0.38) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 70% at 75% 100%, rgba(204,32,39,0.18) 0%, transparent 50%),
+    radial-gradient(ellipse 90% 100% at 50% 50%, #f5ede0 0%, #ebdfcb 100%);
 }
 
-/* ── Decorative spheres ── */
-.hero-sphere {
+/* Soft inner glow behind the title block */
+.hero::before {
+  content: "";
   position: absolute;
-  border-radius: 50%;
+  top: 38%;
+  left: 8%;
+  width: 420px;
+  height: 280px;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.55) 0%, transparent 70%);
+  filter: blur(40px);
   pointer-events: none;
   z-index: 0;
 }
-.hero-sphere-1 {
-  width: 44px; height: 44px;
-  top: 18%;  right: 6%;
-  background: radial-gradient(circle at 35% 35%, var(--teal-light), var(--teal));
-  box-shadow: 0 6px 18px rgba(1,95,105,0.28);
-}
-.hero-sphere-2 {
-  width: 32px; height: 32px;
-  bottom: 14%; left: 6%;
-  background: radial-gradient(circle at 35% 35%, #f5a663, var(--orange));
-  opacity: 0.7;
-  box-shadow: 0 4px 14px rgba(211,111,49,0.3);
-}
-.hero-sphere-3 {
-  width: 20px; height: 20px;
-  top: 8%; left: 48%;
-  background: radial-gradient(circle at 35% 35%, #7fc4ca, var(--teal-light));
-  opacity: 0.5;
-}
+
+/* Decorative spheres hidden — cleaner editorial look */
+.hero-sphere { display: none; }
 
 .hero-inner {
   position: relative;
@@ -240,14 +230,21 @@ a { text-decoration: none; color: inherit; }
 }
 
 .hero-eyebrow {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   font-family: 'Be Vietnam Pro', sans-serif;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--orange);
-  margin-bottom: 14px;
+  background: rgba(211,111,49,0.10);
+  border: 1px solid rgba(211,111,49,0.25);
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 18px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 .hero-title-main {
