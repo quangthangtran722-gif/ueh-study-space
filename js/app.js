@@ -250,6 +250,8 @@ function updateBadgeVisibility(hasFilter) {
   const hint = document.getElementById("filter-hint");
   if (grid) grid.classList.toggle("no-filter", !hasFilter);
   if (hint) hint.classList.toggle("hidden", hasFilter);
+  // Body class — picked up by new design system CSS
+  document.body.classList.toggle("has-filter", hasFilter);
 }
 
 function resetFilters() {
@@ -1007,12 +1009,13 @@ function showCheckinBanner(locationId, locationName) {
   banner.setAttribute("role", "alert");
   banner.setAttribute("aria-live", "polite");
   banner.innerHTML = `
-    <p class="checkin-banner-title">⏰ Bạn đang ở <strong>${locationName}</strong>?</p>
-    <p class="checkin-banner-desc">Báo trạng thái giúp bạn khác!</p>
-    <div class="checkin-banner-actions">
-      <button class="checkin-btn-primary"   id="checkin-now"  type="button">Báo ngay</button>
-      <button class="checkin-btn-secondary" id="checkin-later" type="button">Để sau</button>
+    <span class="checkin-banner-icon" aria-hidden="true">⏰</span>
+    <div class="checkin-banner-text">
+      <p class="checkin-banner-title">Bạn đang ở ${locationName}?</p>
+      <p class="checkin-banner-sub">Báo trạng thái giúp bạn khác!</p>
     </div>
+    <button class="checkin-btn-primary" id="checkin-now" type="button">Báo ngay</button>
+    <button class="checkin-btn-close" id="checkin-later" type="button" aria-label="Đóng">✕</button>
   `;
   document.body.appendChild(banner);
   requestAnimationFrame(() => banner.classList.add("visible"));
@@ -1056,70 +1059,8 @@ function openCheckinReportForm(locationId) {
   }
 }
 
-let _checkinStylesInjected = false;
-function injectCheckinBannerStyles() {
-  if (_checkinStylesInjected) return;
-  _checkinStylesInjected = true;
-  const style = document.createElement("style");
-  style.id = "checkin-banner-styles";
-  style.textContent = `
-    .checkin-banner {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(16px);
-      z-index: 9999;
-      width: 320px;
-      max-width: calc(100vw - 32px);
-      padding: 16px;
-      background: #0d5c63;
-      color: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-      font-family: 'Bricolage Grotesque', sans-serif;
-      opacity: 0;
-      transition: opacity 0.28s ease, transform 0.28s ease;
-    }
-    .checkin-banner.visible {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    .checkin-banner-title {
-      margin: 0 0 4px;
-      font-size: 15px;
-      font-weight: 600;
-      line-height: 1.4;
-    }
-    .checkin-banner-title strong { color: #f0d4b8; font-weight: 700; }
-    .checkin-banner-desc {
-      margin: 0 0 12px;
-      font-size: 13px;
-      color: rgba(255,255,255,0.85);
-      line-height: 1.4;
-    }
-    .checkin-banner-actions {
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-    .checkin-btn-primary,
-    .checkin-btn-secondary {
-      border: none;
-      cursor: pointer;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 600;
-      padding: 8px 14px;
-      border-radius: 8px;
-      transition: background 0.18s ease, transform 0.18s ease;
-    }
-    .checkin-btn-primary  { background: #e8590c; color: #fff; }
-    .checkin-btn-primary:hover { background: #c94a08; transform: translateY(-1px); }
-    .checkin-btn-secondary { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.92); }
-    .checkin-btn-secondary:hover { background: rgba(255,255,255,0.2); }
-  `;
-  document.head.appendChild(style);
-}
+// Banner styles now live in css/styles.css — this function is a no-op kept for API compatibility.
+function injectCheckinBannerStyles() { /* styles in css/styles.css */ }
 
 // ============================================================
 // TOAST
